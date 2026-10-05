@@ -1,0 +1,127 @@
+<div class="page">
+  <header class="header">
+    <div class="header__title">
+      <h1 class="page__title">Labels</h1>
+      <span class="header__meta">
+        {{ labels().length }} {{ labels().length === 1 ? 'label' : 'labels' }}
+      </span>
+    </div>
+
+    <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+      New label
+    </button>
+  </header>
+
+  <section class="card" aria-label="All labels">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Label</th>
+          <th scope="col">Used in</th>
+          <th scope="col"><span class="visually-hidden">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (label of labels(); track label.id) {
+          <tr>
+            <td>
+              <span class="name">
+                <span class="swatch" aria-hidden="true" [style.background]="label.textColor"></span>
+                <app-label-chip [label]="label" />
+              </span>
+            </td>
+            <td class="muted-cell">
+              {{ label.taskCount ?? 0 }}
+              {{ (label.taskCount ?? 0) === 1 ? 'task' : 'tasks' }}
+            </td>
+            <td>
+              <span class="actions">
+                <button
+                  type="button"
+                  class="btn row-btn"
+                  [attr.aria-label]="'Edit label ' + label.name"
+                  (click)="openEdit(label)"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4" />
+                  </svg>
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  class="btn btn--danger-outline row-btn"
+                  [attr.aria-label]="'Delete label ' + label.name"
+                  (click)="askDelete(label)"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+                  </svg>
+                  Delete
+                </button>
+              </span>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="empty" colspan="3">No labels yet. Create the first one.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+
+  @if (dialog(); as d) {
+    <app-label-dialog
+      [label]="d.label"
+      [saving]="saving()"
+      [errorMessage]="saveError()"
+      (saved)="save($event)"
+      (cancelled)="closeDialog()"
+    />
+  }
+
+  @if (labelToDelete()) {
+    <app-confirm-dialog
+      [heading]="deleteHeading()"
+      [message]="deleteMessage()"
+      confirmLabel="Delete label"
+      [busy]="deleting()"
+      [errorMessage]="deleteError()"
+      (confirmed)="confirmDelete()"
+      (cancelled)="cancelDelete()"
+    />
+  }
+</div>

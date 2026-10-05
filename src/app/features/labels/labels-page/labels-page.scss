@@ -1,0 +1,102 @@
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.header__title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header__meta {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.card {
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+}
+
+.table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+
+  th {
+    padding: 10px 20px;
+    background: #fafaf8;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-align: left;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  td {
+    height: 64px;
+    padding: 8px 20px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  // "Used in" is a fixed width and the actions column is only as wide as its buttons
+  // (width: 1% + nowrap), so the first column takes all the remaining space.
+  th:nth-child(2),
+  td:nth-child(2) {
+    width: 120px;
+  }
+
+  th:last-child,
+  td:last-child {
+    width: 1%;
+    white-space: nowrap;
+  }
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.swatch {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.muted-cell {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.row-btn {
+  padding: 0 14px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}

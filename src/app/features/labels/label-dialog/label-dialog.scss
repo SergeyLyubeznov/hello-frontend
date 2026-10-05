@@ -1,0 +1,124 @@
+.dialog {
+  width: calc(100% - 32px);
+  max-width: 520px;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: #fff;
+  color: var(--color-text);
+  box-shadow: 0 20px 50px rgb(23 24 28 / 25%);
+
+  &::backdrop {
+    background: rgb(23 24 28 / 45%);
+  }
+}
+
+.dialog__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px;
+
+  h1 {
+    margin: 0;
+    font:
+      700 22px/1.2 'Bricolage Grotesque',
+      'Segoe UI',
+      sans-serif;
+    letter-spacing: -0.01em;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid #c9c8c2;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--color-text);
+    font:
+      15px 'Hanken Grotesk',
+      'Segoe UI',
+      sans-serif;
+  }
+}
+
+.colors {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend {
+    padding: 0 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+}
+
+.colors__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.color {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid #c9c8c2;
+  border-radius: 10px;
+  cursor: pointer;
+
+  input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--color-primary);
+  }
+}
+
+.color__chip {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.preview__label {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.error {
+  margin: 0;
+  font-size: 13px;
+  color: #b42318;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}

@@ -7,7 +7,11 @@ export interface Label {
   name: string;
   textColor: string;
   backgroundColor: string;
+  // Only the labels endpoint sends this: how many tasks use the label.
+  taskCount?: number;
 }
+
+export type LabelDto = Omit<Label, 'id' | 'taskCount'>;
 
 export interface Task {
   id: number;

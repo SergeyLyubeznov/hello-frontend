@@ -1,0 +1,58 @@
+<dialog
+  #dialog
+  class="dialog"
+  aria-labelledby="label-dialog-title"
+  (cancel)="onEscape($event)"
+  (click)="onClick($event)"
+>
+  <form class="dialog__inner" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <h1 id="label-dialog-title">{{ label() ? 'Edit label' : 'New label' }}</h1>
+
+    <div class="field">
+      <label for="label-name">Name</label>
+      <input id="label-name" type="text" formControlName="name" placeholder="e.g. Bug" />
+      @if (form.controls.name.touched && form.controls.name.hasError('required')) {
+        <p class="error">Name is required</p>
+      }
+      @if (form.controls.name.hasError('maxlength')) {
+        <p class="error">Name is too long (max 50 characters)</p>
+      }
+    </div>
+
+    <fieldset class="colors">
+      <legend>Color</legend>
+      <div class="colors__grid">
+        @for (color of colors; track color.id) {
+          <label class="color">
+            <input type="radio" formControlName="colorId" [value]="color.id" />
+            <span
+              class="color__chip"
+              [style.color]="color.textColor"
+              [style.background]="color.backgroundColor"
+            >
+              {{ color.name }}
+            </span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <div class="preview">
+      <span class="preview__label">Preview</span>
+      <app-label-chip [label]="preview()" />
+    </div>
+
+    @if (errorMessage()) {
+      <p class="error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <div class="actions">
+      <button type="button" class="btn" [disabled]="saving()" (click)="requestCancel()">
+        Cancel
+      </button>
+      <button type="submit" class="btn btn--primary" [disabled]="saving()">
+        {{ label() ? 'Save changes' : 'Create label' }}
+      </button>
+    </div>
+  </form>
+</dialog>
