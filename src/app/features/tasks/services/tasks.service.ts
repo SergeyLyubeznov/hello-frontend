@@ -38,4 +38,10 @@ export class TasksService {
         ),
       );
   }
+
+  deleteTask(id: number): Observable<void> {
+    return this.http
+      .delete<void>(`${API_URL}/${id}`)
+      .pipe(tap(() => this._tasks.update((tasks) => tasks.filter((task) => task.id !== id))));
+  }
 }

@@ -1,0 +1,41 @@
+<dialog
+  #dialog
+  class="dialog"
+  aria-labelledby="dialog-title"
+  aria-describedby="dialog-text"
+  (cancel)="onEscape($event)"
+  (click)="onClick($event)"
+>
+  <div class="dialog__inner">
+    <div class="dialog__content">
+      <span class="dialog__icon" aria-hidden="true">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6" />
+        </svg>
+      </span>
+      <h1 id="dialog-title">{{ heading() }}</h1>
+      <p id="dialog-text">{{ message() }}</p>
+      @if (errorMessage()) {
+        <p class="dialog__error" role="alert">{{ errorMessage() }}</p>
+      }
+    </div>
+
+    <div class="dialog__actions">
+      <button type="button" class="btn" [disabled]="busy()" (click)="requestCancel()">
+        Cancel
+      </button>
+      <button type="button" class="btn btn--danger" [disabled]="busy()" (click)="confirmed.emit()">
+        {{ confirmLabel() }}
+      </button>
+    </div>
+  </div>
+</dialog>

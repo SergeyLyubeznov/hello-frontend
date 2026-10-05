@@ -7,9 +7,26 @@
     </nav>
 
     @if (state() === 'ready') {
-      <a class="btn" [routerLink]="['/tasks', id, 'edit']">Edit</a>
+      <div class="actions">
+        <a class="btn" [routerLink]="['/tasks', id, 'edit']">Edit</a>
+        <button type="button" class="btn btn--danger-outline" (click)="openDeleteDialog()">
+          Delete task
+        </button>
+      </div>
     }
   </div>
+
+  @if (confirmingDelete()) {
+    <app-confirm-dialog
+      heading="Delete this task?"
+      [message]="deleteMessage()"
+      confirmLabel="Delete task"
+      [busy]="deleting()"
+      [errorMessage]="deleteError()"
+      (confirmed)="confirmDelete()"
+      (cancelled)="closeDeleteDialog()"
+    />
+  }
 
   @switch (state()) {
     @case ('loading') {
