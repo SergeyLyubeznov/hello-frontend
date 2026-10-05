@@ -53,6 +53,50 @@ body {
   color: #fff;
 }
 
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 32px 40px;
+}
+
+.page__title {
+  margin: 0;
+  font:
+    700 30px/1.1 'Bricolage Grotesque',
+    'Segoe UI',
+    sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+
+  a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.breadcrumb__current {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.muted {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;

@@ -38,7 +38,7 @@
         </div>
 
         @for (task of tasksByStatus()[column.status]; track task.id) {
-          <article class="card">
+          <a class="card" [routerLink]="['/tasks', task.id]">
             @if (priority[task.priority]; as p) {
               <span class="priority" [style.color]="p.color" [style.background]="p.background">
                 <span class="priority__icon" aria-hidden="true">{{ p.icon }}</span>
@@ -47,7 +47,7 @@
             }
             <h3>{{ task.title }}</h3>
             <p>{{ task.description }}</p>
-          </article>
+          </a>
         } @empty {
           <p class="empty">No tasks</p>
         }

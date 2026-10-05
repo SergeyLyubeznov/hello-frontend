@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { CreateTaskDto, Task } from '../models/task.model';
+import { CreateTaskDto, Task, UpdateTaskDto } from '../models/task.model';
 
 const API_URL = '/api/tasks';
 
@@ -19,9 +19,23 @@ export class TasksService {
     });
   }
 
+  getTask(id: number): Observable<Task> {
+    return this.http.get<Task>(`${API_URL}/${id}`);
+  }
+
   createTask(dto: CreateTaskDto): Observable<Task> {
     return this.http
       .post<Task>(API_URL, dto)
       .pipe(tap((task) => this._tasks.update((tasks) => [...tasks, task])));
+  }
+
+  updateTask(id: number, dto: UpdateTaskDto): Observable<Task> {
+    return this.http
+      .put<Task>(`${API_URL}/${id}`, dto)
+      .pipe(
+        tap((updated) =>
+          this._tasks.update((tasks) => tasks.map((task) => (task.id === id ? updated : task))),
+        ),
+      );
   }
 }

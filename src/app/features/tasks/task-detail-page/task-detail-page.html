@@ -1,0 +1,73 @@
+<div class="page">
+  <div class="top">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/board">Board</a>
+      <span aria-hidden="true">/</span>
+      <span class="breadcrumb__current">T-{{ id }}</span>
+    </nav>
+
+    @if (state() === 'ready') {
+      <a class="btn" [routerLink]="['/tasks', id, 'edit']">Edit</a>
+    }
+  </div>
+
+  @switch (state()) {
+    @case ('loading') {
+      <p class="muted">Loading task…</p>
+    }
+    @case ('not-found') {
+      <p class="muted">Task not found. <a routerLink="/board">Back to the board</a></p>
+    }
+    @case ('error') {
+      <p class="muted">Could not load the task. Try again later.</p>
+    }
+    @case ('ready') {
+      @if (task(); as t) {
+        <div class="layout">
+          <div class="main">
+            <div class="heading">
+              @if (priority(); as p) {
+                <span class="priority" [style.color]="p.color" [style.background]="p.background">
+                  <span class="priority__icon" aria-hidden="true">{{ p.icon }}</span>
+                  {{ p.label }}
+                </span>
+              }
+              <h1 class="page__title">{{ t.title }}</h1>
+            </div>
+
+            <section class="section" aria-labelledby="desc-heading">
+              <h2 id="desc-heading">Description</h2>
+              @if (t.description) {
+                <p class="description">{{ t.description }}</p>
+              } @else {
+                <p class="muted">No description</p>
+              }
+            </section>
+          </div>
+
+          <aside class="details" aria-label="Details">
+            <h2>Details</h2>
+
+            <div class="row">
+              <span class="row__label">Status</span>
+              @if (column(); as c) {
+                <span class="status" [style.--column-color]="c.color">{{ c.title }}</span>
+              } @else {
+                <span>{{ t.status }}</span>
+              }
+            </div>
+
+            <div class="row">
+              <span class="row__label">Priority</span>
+              @if (priority(); as p) {
+                <span>{{ p.label }}</span>
+              } @else {
+                <span>{{ t.priority }}</span>
+              }
+            </div>
+          </aside>
+        </div>
+      }
+    }
+  }
+</div>

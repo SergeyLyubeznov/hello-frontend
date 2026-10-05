@@ -39,6 +39,7 @@ export const PRIORITIES: PriorityOption[] = [
 ];
 
 export type CreateTaskDto = Omit<Task, 'id'>;
+export type UpdateTaskDto = CreateTaskDto;
 
 export interface BoardColumn {
   status: TaskStatus;
