@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TaskForm } from '../components/task-form/task-form';
-import { Task, UpdateTaskDto } from '../models/task.model';
+import { CreateTaskDto, Task, UpdateTaskDto } from '../models/task.model';
 import { TasksService } from '../services/tasks.service';
 
 type LoadState = 'loading' | 'ready' | 'not-found' | 'error';
@@ -23,6 +23,23 @@ export class EditTaskPage {
   protected readonly task = signal<Task | null>(null);
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+
+  // The form works with label ids, while the loaded task carries whole labels.
+  protected readonly initialValue = computed<CreateTaskDto | null>(() => {
+    const task = this.task();
+    if (!task) {
+      return null;
+    }
+
+    return {
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      priority: task.priority,
+      dueDate: task.dueDate,
+      labelIds: task.labels.map((label) => label.id),
+    };
+  });
 
   constructor() {
     if (!Number.isInteger(this.id)) {

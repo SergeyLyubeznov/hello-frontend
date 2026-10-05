@@ -22,6 +22,7 @@ export class NewTaskPage {
     description: '',
     status: this.initialStatus(),
     priority: 'MEDIUM',
+    labelIds: [],
   };
 
   private initialStatus(): TaskStatus {

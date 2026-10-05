@@ -1,60 +1,82 @@
 <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div class="card">
-    <div class="field">
-      <label for="title">Title</label>
-      <input
-        id="title"
-        class="field__title"
-        type="text"
-        formControlName="title"
-        placeholder="What needs to be done?"
-      />
-      @if (form.controls.title.touched && form.controls.title.hasError('required')) {
-        <p class="error">Title is required</p>
-      }
-      @if (form.controls.title.hasError('maxlength')) {
-        <p class="error">Title is too long (max 100 characters)</p>
-      }
-    </div>
-
-    <div class="field">
-      <label for="description">Description</label>
-      <textarea
-        id="description"
-        rows="7"
-        formControlName="description"
-        placeholder="Add details, links or acceptance criteria"
-      ></textarea>
-      @if (form.controls.description.hasError('maxlength')) {
-        <p class="error">Description is too long (max 500 characters)</p>
-      }
-    </div>
-
-    <div class="field">
-      <label for="status">Status</label>
-      <select id="status" formControlName="status">
-        @for (s of statuses; track s.status) {
-          <option [value]="s.status">{{ s.title }}</option>
+  <div class="layout">
+    <div class="card card--main">
+      <div class="field">
+        <label for="title">Title</label>
+        <input
+          id="title"
+          class="field__title"
+          type="text"
+          formControlName="title"
+          placeholder="What needs to be done?"
+        />
+        @if (form.controls.title.touched && form.controls.title.hasError('required')) {
+          <p class="error">Title is required</p>
         }
-      </select>
-    </div>
-
-    <div class="field">
-      <label for="dueDate">Due date</label>
-      <input id="dueDate" type="date" formControlName="dueDate" />
-    </div>
-
-    <fieldset class="field field--group">
-      <legend>Priority</legend>
-      <div class="choices">
-        @for (p of priorities; track p.value) {
-          <label class="choice">
-            <input type="radio" formControlName="priority" [value]="p.value" />
-            {{ p.label }}
-          </label>
+        @if (form.controls.title.hasError('maxlength')) {
+          <p class="error">Title is too long (max 100 characters)</p>
         }
       </div>
-    </fieldset>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          rows="7"
+          formControlName="description"
+          placeholder="Add details, links or acceptance criteria"
+        ></textarea>
+        @if (form.controls.description.hasError('maxlength')) {
+          <p class="error">Description is too long (max 500 characters)</p>
+        }
+      </div>
+    </div>
+
+    <aside class="card card--details" aria-label="Details">
+      <h2>Details</h2>
+
+      <div class="field">
+        <label for="status">Status</label>
+        <select id="status" formControlName="status">
+          @for (s of statuses; track s.status) {
+            <option [value]="s.status">{{ s.title }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="dueDate">Due date</label>
+        <input id="dueDate" type="date" formControlName="dueDate" />
+      </div>
+
+      <fieldset class="field field--group">
+        <legend>Priority</legend>
+        <div class="choices">
+          @for (p of priorities; track p.value) {
+            <label class="choice">
+              <input type="radio" formControlName="priority" [value]="p.value" />
+              {{ p.label }}
+            </label>
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="field field--group">
+        <legend>Labels</legend>
+        <div class="choices">
+          @for (label of labels(); track label.id) {
+            <label class="choice">
+              <input
+                type="checkbox"
+                [checked]="isLabelSelected(label.id)"
+                (change)="toggleLabel(label.id, $event)"
+              />
+              {{ label.name }}
+            </label>
+          }
+        </div>
+      </fieldset>
+    </aside>
   </div>
 
   @if (errorMessage()) {

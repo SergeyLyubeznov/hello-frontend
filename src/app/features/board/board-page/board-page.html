@@ -39,12 +39,17 @@
 
         @for (task of tasksByStatus()[column.status]; track task.id) {
           <a class="card" [routerLink]="['/tasks', task.id]">
-            @if (priority[task.priority]; as p) {
-              <span class="priority" [style.color]="p.color" [style.background]="p.background">
-                <span class="priority__icon" aria-hidden="true">{{ p.icon }}</span>
-                {{ p.label }}
-              </span>
-            }
+            <div class="badges">
+              @for (label of task.labels; track label.id) {
+                <app-label-chip [label]="label" />
+              }
+              @if (priority[task.priority]; as p) {
+                <span class="priority" [style.color]="p.color" [style.background]="p.background">
+                  <span class="priority__icon" aria-hidden="true">{{ p.icon }}</span>
+                  {{ p.label }}
+                </span>
+              }
+            </div>
             <h3>{{ task.title }}</h3>
             <p>{{ task.description }}</p>
             @if (task.dueDate) {

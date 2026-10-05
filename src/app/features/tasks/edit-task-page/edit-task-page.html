@@ -20,9 +20,9 @@
       <p class="muted">Could not load the task. Try again later.</p>
     }
     @case ('ready') {
-      @if (task(); as t) {
+      @if (initialValue(); as value) {
         <app-task-form
-          [initialValue]="t"
+          [initialValue]="value"
           submitLabel="Save changes"
           [saving]="saving()"
           [errorMessage]="errorMessage()"

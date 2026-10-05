@@ -2,6 +2,13 @@ export type TaskStatus = 'PENDING' | 'IN_PROGRESS' | 'TESTING' | 'COMPLETED';
 
 export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
+export interface Label {
+  id: number;
+  name: string;
+  textColor: string;
+  backgroundColor: string;
+}
+
 export interface Task {
   id: number;
   title: string;
@@ -9,6 +16,7 @@ export interface Task {
   status: TaskStatus;
   priority: TaskPriority;
   dueDate?: string | null;
+  labels: Label[];
   createdAt: string;
   updatedAt: string;
 }
@@ -41,7 +49,11 @@ export const PRIORITIES: PriorityOption[] = [
   PRIORITY_META.CRITICAL,
 ];
 
-export type CreateTaskDto = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
+// The backend returns full labels on a task but expects only their ids when saving.
+// PUT without `labelIds` clears the task's labels, so always send them.
+export type CreateTaskDto = Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'labels'> & {
+  labelIds: number[];
+};
 export type UpdateTaskDto = CreateTaskDto;
 
 export interface BoardColumn {

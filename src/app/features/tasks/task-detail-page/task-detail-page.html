@@ -43,12 +43,17 @@
         <div class="layout">
           <div class="main">
             <div class="heading">
-              @if (priority(); as p) {
-                <span class="priority" [style.color]="p.color" [style.background]="p.background">
-                  <span class="priority__icon" aria-hidden="true">{{ p.icon }}</span>
-                  {{ p.label }}
-                </span>
-              }
+              <div class="badges">
+                @for (label of t.labels; track label.id) {
+                  <app-label-chip [label]="label" />
+                }
+                @if (priority(); as p) {
+                  <span class="priority" [style.color]="p.color" [style.background]="p.background">
+                    <span class="priority__icon" aria-hidden="true">{{ p.icon }}</span>
+                    {{ p.label }}
+                  </span>
+                }
+              </div>
               <h1 class="page__title">{{ t.title }}</h1>
             </div>
 
@@ -105,6 +110,17 @@
               } @else {
                 <span>{{ t.priority }}</span>
               }
+            </div>
+
+            <div class="row">
+              <span class="row__label">Labels</span>
+              <span class="row__chips">
+                @for (label of t.labels; track label.id) {
+                  <app-label-chip [label]="label" />
+                } @empty {
+                  <span class="muted">None</span>
+                }
+              </span>
             </div>
 
             <div class="row">

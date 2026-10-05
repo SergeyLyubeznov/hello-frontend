@@ -1,13 +1,14 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { LabelChip } from '../../../shared/components/label-chip/label-chip';
 import { TasksService } from '../../tasks/services/tasks.service';
 import { BOARD_COLUMNS, PRIORITY_META, Task, TaskStatus } from '../../tasks/models/task.model';
 import { isOverdue } from '../../tasks/models/task.utils';
 
 @Component({
   selector: 'app-board-page',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, LabelChip],
   templateUrl: './board-page.html',
   styleUrl: './board-page.scss',
 })
