@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { BOARD_COLUMNS, TaskStatus } from '../models/task.model';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { BOARD_COLUMNS, PRIORITIES, TaskPriority, TaskStatus } from '../models/task.model';
 import { TasksService } from '../services/tasks.service';
 
 @Component({
@@ -13,17 +13,26 @@ import { TasksService } from '../services/tasks.service';
 export class NewTaskPage {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly tasksService = inject(TasksService);
 
   protected readonly statuses = BOARD_COLUMNS;
+  protected readonly priorities = PRIORITIES;
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly form = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(100)]],
     description: [''],
-    status: ['PENDING' as TaskStatus],
+    status: [this.initialStatus()],
+    priority: ['MEDIUM' as TaskPriority],
   });
+
+  private initialStatus(): TaskStatus {
+    const status = this.route.snapshot.queryParamMap.get('status');
+    const known = this.statuses.find((column) => column.status === status);
+    return known ? known.status : 'PENDING';
+  }
 
   protected onSubmit(): void {
     if (this.form.invalid) {

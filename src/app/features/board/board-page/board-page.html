@@ -9,14 +9,42 @@
 
   <div class="columns">
     @for (column of columns; track column.status) {
-      <section class="column">
-        <h2>
-          {{ column.title }}
-          <span class="count">{{ tasksByStatus()[column.status].length }}</span>
-        </h2>
+      <section class="column" [style.--column-color]="column.color">
+        <div class="column__header">
+          <h2>
+            {{ column.title }}
+            <span class="count">{{ tasksByStatus()[column.status].length }}</span>
+          </h2>
+          <a
+            class="column__add"
+            routerLink="/tasks/new"
+            [queryParams]="{ status: column.status }"
+            [attr.aria-label]="'Add task to ' + column.title"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </a>
+        </div>
 
         @for (task of tasksByStatus()[column.status]; track task.id) {
           <article class="card">
+            @if (priority[task.priority]; as p) {
+              <span class="priority" [style.color]="p.color" [style.background]="p.background">
+                <span class="priority__icon" aria-hidden="true">{{ p.icon }}</span>
+                {{ p.label }}
+              </span>
+            }
             <h3>{{ task.title }}</h3>
             <p>{{ task.description }}</p>
           </article>

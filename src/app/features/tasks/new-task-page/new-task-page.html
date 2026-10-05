@@ -44,6 +44,18 @@
           }
         </select>
       </div>
+
+      <fieldset class="field field--group">
+        <legend>Priority</legend>
+        <div class="choices">
+          @for (p of priorities; track p.value) {
+            <label class="choice">
+              <input type="radio" formControlName="priority" [value]="p.value" />
+              {{ p.label }}
+            </label>
+          }
+        </div>
+      </fieldset>
     </div>
 
     @if (errorMessage()) {
