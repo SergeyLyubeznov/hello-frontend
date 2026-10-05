@@ -1,0 +1,103 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 32px 40px;
+}
+
+.board__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  h1 {
+    margin: 0;
+    font:
+      700 30px/1.1 'Bricolage Grotesque',
+      'Segoe UI',
+      sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+.board__meta {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.columns {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+
+.column {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background: var(--color-column);
+  border-radius: 14px;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 2px 4px;
+    font-size: 15px;
+    font-weight: 700;
+
+    &::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #7a8190;
+    }
+  }
+}
+
+.count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  &:hover {
+    border-color: var(--color-primary-border);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-text-muted);
+  }
+}
+
+.empty {
+  margin: 0;
+  padding: 16px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}

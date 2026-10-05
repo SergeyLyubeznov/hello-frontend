@@ -1,0 +1,26 @@
+<main class="board">
+  <header class="board__header">
+    <h1>Board</h1>
+    <span class="board__meta">{{ tasksService.tasks().length }} tasks</span>
+  </header>
+
+  <div class="columns">
+    @for (column of columns; track column.status) {
+      <section class="column">
+        <h2>
+          {{ column.title }}
+          <span class="count">{{ tasksByStatus()[column.status].length }}</span>
+        </h2>
+
+        @for (task of tasksByStatus()[column.status]; track task.id) {
+          <article class="card">
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+          </article>
+        } @empty {
+          <p class="empty">No tasks</p>
+        }
+      </section>
+    }
+  </div>
+</main>
