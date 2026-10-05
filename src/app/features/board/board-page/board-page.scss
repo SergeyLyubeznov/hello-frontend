@@ -47,8 +47,19 @@
   flex-direction: column;
   gap: 12px;
   padding: 12px;
+  min-height: 120px;
   background: var(--color-column);
+  border: 2px solid transparent;
   border-radius: 14px;
+  transition:
+    border-color 120ms,
+    background 120ms;
+
+  // A dragged card is over this column.
+  &.column--over {
+    border-color: var(--column-color);
+    background: color-mix(in srgb, var(--column-color) 8%, var(--color-column));
+  }
 
   h2 {
     display: flex;
@@ -107,6 +118,7 @@
   border-radius: 12px;
   color: inherit;
   text-decoration: none;
+  cursor: grab;
 
   &:hover {
     border-color: var(--color-primary-border);

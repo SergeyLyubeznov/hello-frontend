@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { CreateTaskDto, Task, UpdateTaskDto } from '../models/task.model';
+import { Observable, catchError, defer, tap, throwError } from 'rxjs';
+import { CreateTaskDto, Task, TaskStatus, UpdateTaskDto } from '../models/task.model';
 
 const API_URL = '/api/tasks';
 
@@ -43,5 +43,31 @@ export class TasksService {
     return this.http
       .delete<void>(`${API_URL}/${id}`)
       .pipe(tap(() => this._tasks.update((tasks) => tasks.filter((task) => task.id !== id))));
+  }
+
+  // Optimistic: the task changes column at once, and goes back if the request fails.
+  moveTask(id: number, status: TaskStatus): Observable<Task> {
+    return defer(() => {
+      const original = this._tasks().find((task) => task.id === id);
+      this.setStatusLocally(id, status);
+
+      return this.http.patch<Task>(`${API_URL}/${id}/status`, { status }).pipe(
+        tap((updated) =>
+          this._tasks.update((tasks) => tasks.map((task) => (task.id === id ? updated : task))),
+        ),
+        catchError((error) => {
+          if (original) {
+            this.setStatusLocally(id, original.status);
+          }
+          return throwError(() => error);
+        }),
+      );
+    });
+  }
+
+  private setStatusLocally(id: number, status: TaskStatus): void {
+    this._tasks.update((tasks) =>
+      tasks.map((task) => (task.id === id ? { ...task, status } : task)),
+    );
   }
 }

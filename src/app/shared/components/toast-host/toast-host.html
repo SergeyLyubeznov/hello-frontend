@@ -1,0 +1,15 @@
+<div class="toasts">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div class="toast" role="alert">
+      <span class="toast__message">{{ toast.message }}</span>
+      <button
+        type="button"
+        class="toast__close"
+        aria-label="Dismiss"
+        (click)="toastService.dismiss(toast.id)"
+      >
+        ×
+      </button>
+    </div>
+  }
+</div>

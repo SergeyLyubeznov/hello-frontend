@@ -7,9 +7,19 @@
     <a class="btn btn--primary" routerLink="/tasks/new">New task</a>
   </header>
 
-  <div class="columns">
+  <div class="columns" cdkDropListGroup>
     @for (column of columns; track column.status) {
-      <section class="column" [style.--column-color]="column.color">
+      <section
+        class="column"
+        [class.column--over]="hoveredStatus() === column.status"
+        [style.--column-color]="column.color"
+        cdkDropList
+        cdkDropListSortingDisabled
+        [cdkDropListData]="column.status"
+        (cdkDropListDropped)="onDrop($event, column.status)"
+        (cdkDropListEntered)="hoveredStatus.set(column.status)"
+        (cdkDropListExited)="hoveredStatus.set(null)"
+      >
         <div class="column__header">
           <h2>
             {{ column.title }}
@@ -38,7 +48,13 @@
         </div>
 
         @for (task of tasksByStatus()[column.status]; track task.id) {
-          <a class="card" [routerLink]="['/tasks', task.id]">
+          <a
+            class="card"
+            [routerLink]="['/tasks', task.id]"
+            cdkDrag
+            [cdkDragData]="task"
+            [cdkDragStartDelay]="{ mouse: 0, touch: 150 }"
+          >
             <div class="badges">
               @for (label of task.labels; track label.id) {
                 <app-label-chip [label]="label" />

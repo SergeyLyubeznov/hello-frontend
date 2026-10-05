@@ -112,3 +112,19 @@ body {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+
+// Drag and drop (Angular CDK). The preview is attached to <body>, so these are global.
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 12px;
+  box-shadow: 0 14px 30px rgb(23 24 28 / 22%);
+  cursor: grabbing;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.35;
+}
+
+.cdk-drag-animating {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
