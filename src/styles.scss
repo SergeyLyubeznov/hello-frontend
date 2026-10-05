@@ -1,1 +1,21 @@
-/* You can add global styles to this file, and also import other style files */
+@use "fonts";
+
+:root {
+  --color-bg: #F6F6F3;
+  --color-primary: #4250C4;
+  --color-primary-soft: #ECEEFB;
+  --color-text: #17181C;
+  --color-border: #E6E5E0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Hanken Grotesk', 'Segoe UI', sans-serif;
+}
