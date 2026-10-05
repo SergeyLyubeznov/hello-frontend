@@ -8,6 +8,9 @@ export interface Task {
   description: string;
   status: TaskStatus;
   priority: TaskPriority;
+  dueDate?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface PriorityOption {
@@ -38,18 +41,44 @@ export const PRIORITIES: PriorityOption[] = [
   PRIORITY_META.CRITICAL,
 ];
 
-export type CreateTaskDto = Omit<Task, 'id'>;
+export type CreateTaskDto = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
 export type UpdateTaskDto = CreateTaskDto;
 
 export interface BoardColumn {
   status: TaskStatus;
   title: string;
   color: string;
+  badgeColor: string;
+  badgeBackground: string;
 }
 
 export const BOARD_COLUMNS: BoardColumn[] = [
-  { status: 'PENDING', title: 'To do', color: '#7a8190' },
-  { status: 'IN_PROGRESS', title: 'In progress', color: '#4250c4' },
-  { status: 'TESTING', title: 'In review', color: '#b7791f' },
-  { status: 'COMPLETED', title: 'Done', color: '#2f855a' },
+  {
+    status: 'PENDING',
+    title: 'To do',
+    color: '#7a8190',
+    badgeColor: '#3e4856',
+    badgeBackground: '#eceef1',
+  },
+  {
+    status: 'IN_PROGRESS',
+    title: 'In progress',
+    color: '#4250c4',
+    badgeColor: '#3730a3',
+    badgeBackground: '#e3e7fb',
+  },
+  {
+    status: 'TESTING',
+    title: 'In review',
+    color: '#b7791f',
+    badgeColor: '#7a4b05',
+    badgeBackground: '#fbefc9',
+  },
+  {
+    status: 'COMPLETED',
+    title: 'Done',
+    color: '#2f855a',
+    badgeColor: '#14532d',
+    badgeBackground: '#d8f3e1',
+  },
 ];

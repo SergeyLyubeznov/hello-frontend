@@ -68,19 +68,57 @@
             <div class="row">
               <span class="row__label">Status</span>
               @if (column(); as c) {
-                <span class="status" [style.--column-color]="c.color">{{ c.title }}</span>
+                <span
+                  class="status"
+                  [style.color]="c.badgeColor"
+                  [style.background]="c.badgeBackground"
+                >
+                  {{ c.title }}
+                </span>
               } @else {
                 <span>{{ t.status }}</span>
               }
             </div>
 
             <div class="row">
+              <span class="row__label">Due date</span>
+              @if (t.dueDate) {
+                <time
+                  class="row__value"
+                  [class.row__value--overdue]="isOverdue(t)"
+                  [attr.datetime]="t.dueDate"
+                >
+                  {{ t.dueDate | date: 'MMM d, y' }}
+                </time>
+              } @else {
+                <span class="muted">Not set</span>
+              }
+            </div>
+
+            <div class="row">
               <span class="row__label">Priority</span>
               @if (priority(); as p) {
-                <span>{{ p.label }}</span>
+                <span class="priority" [style.color]="p.color" [style.background]="p.background">
+                  <span class="priority__icon" aria-hidden="true">{{ p.icon }}</span>
+                  {{ p.label }}
+                </span>
               } @else {
                 <span>{{ t.priority }}</span>
               }
+            </div>
+
+            <div class="row">
+              <span class="row__label">Created</span>
+              <time class="row__value" [attr.datetime]="t.createdAt">
+                {{ t.createdAt | date: 'MMM d, y, HH:mm' }}
+              </time>
+            </div>
+
+            <div class="row">
+              <span class="row__label">Updated</span>
+              <time class="row__value" [attr.datetime]="t.updatedAt">
+                {{ t.updatedAt | date: 'MMM d, y, HH:mm' }}
+              </time>
             </div>
           </aside>
         </div>

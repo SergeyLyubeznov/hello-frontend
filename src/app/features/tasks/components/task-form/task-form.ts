@@ -8,6 +8,7 @@ const EMPTY_TASK: CreateTaskDto = {
   description: '',
   status: 'PENDING',
   priority: 'MEDIUM',
+  dueDate: null,
 };
 
 @Component({
@@ -34,11 +35,13 @@ export class TaskForm implements OnInit {
     description: [EMPTY_TASK.description, [Validators.maxLength(500)]],
     status: [EMPTY_TASK.status],
     priority: [EMPTY_TASK.priority],
+    dueDate: [''],
   });
 
   ngOnInit(): void {
-    const { title, description, status, priority } = this.initialValue();
-    this.form.reset({ title, description, status, priority });
+    const { title, description, status, priority, dueDate } = this.initialValue();
+    // A date input only understands "YYYY-MM-DD", so cut off any time part.
+    this.form.reset({ title, description, status, priority, dueDate: dueDate?.slice(0, 10) ?? '' });
   }
 
   protected onSubmit(): void {
@@ -47,6 +50,7 @@ export class TaskForm implements OnInit {
       return;
     }
 
-    this.submitted.emit(this.form.getRawValue());
+    const { dueDate, ...task } = this.form.getRawValue();
+    this.submitted.emit({ ...task, dueDate: dueDate || null });
   }
 }

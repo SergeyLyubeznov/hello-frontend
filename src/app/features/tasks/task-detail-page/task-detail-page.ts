@@ -1,15 +1,17 @@
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { BOARD_COLUMNS, PRIORITY_META, Task } from '../models/task.model';
+import { isOverdue } from '../models/task.utils';
 import { TasksService } from '../services/tasks.service';
 
 type LoadState = 'loading' | 'ready' | 'not-found' | 'error';
 
 @Component({
   selector: 'app-task-detail-page',
-  imports: [RouterLink, ConfirmDialog],
+  imports: [DatePipe, RouterLink, ConfirmDialog],
   templateUrl: './task-detail-page.html',
   styleUrl: './task-detail-page.scss',
 })
@@ -26,6 +28,8 @@ export class TaskDetailPage {
   protected readonly confirmingDelete = signal(false);
   protected readonly deleting = signal(false);
   protected readonly deleteError = signal<string | null>(null);
+
+  protected readonly isOverdue = isOverdue;
 
   protected readonly column = computed(() =>
     BOARD_COLUMNS.find((column) => column.status === this.task()?.status),
