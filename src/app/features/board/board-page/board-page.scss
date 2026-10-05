@@ -7,6 +7,14 @@
 
 .board__header {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.board__title {
+  display: flex;
   flex-direction: column;
   gap: 4px;
 

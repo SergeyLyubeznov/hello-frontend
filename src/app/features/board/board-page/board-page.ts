@@ -1,10 +1,11 @@
 import { Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TasksService } from '../../tasks/services/tasks.service';
 import { BOARD_COLUMNS, Task, TaskStatus } from '../../tasks/models/task.model';
 
 @Component({
   selector: 'app-board-page',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './board-page.html',
   styleUrl: './board-page.scss',
 })

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { Task } from '../models/task.model';
+import { Observable, tap } from 'rxjs';
+import { CreateTaskDto, Task } from '../models/task.model';
 
 const API_URL = '/api/tasks';
 
@@ -16,5 +17,11 @@ export class TasksService {
       next: (tasks) => this._tasks.set(tasks),
       error: (err) => console.error('Failed to load tasks', err),
     });
+  }
+
+  createTask(dto: CreateTaskDto): Observable<Task> {
+    return this.http
+      .post<Task>(API_URL, dto)
+      .pipe(tap((task) => this._tasks.update((tasks) => [...tasks, task])));
   }
 }

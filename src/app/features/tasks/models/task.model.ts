@@ -7,6 +7,8 @@ export interface Task {
   status: TaskStatus;
 }
 
+export type CreateTaskDto = Omit<Task, 'id'>;
+
 export interface BoardColumn {
   status: TaskStatus;
   title: string;

@@ -1,7 +1,10 @@
 <div class="board">
   <header class="board__header">
-    <h1>Board</h1>
-    <span class="board__meta">{{ tasksService.tasks().length }} tasks</span>
+    <div class="board__title">
+      <h1>Board</h1>
+      <span class="board__meta">{{ tasksService.tasks().length }} tasks</span>
+    </div>
+    <a class="btn btn--primary" routerLink="/tasks/new">New task</a>
   </header>
 
   <div class="columns">
