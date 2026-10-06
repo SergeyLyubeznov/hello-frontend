@@ -4,6 +4,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { LabelChip } from '../../../shared/components/label-chip/label-chip';
+import { ProjectsService } from '../../projects/services/projects.service';
 import { BOARD_COLUMNS, PRIORITY_META, Task } from '../models/task.model';
 import { isOverdue } from '../models/task.utils';
 import { TasksService } from '../services/tasks.service';
@@ -20,6 +21,7 @@ export class TaskDetailPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly tasksService = inject(TasksService);
+  private readonly projectsService = inject(ProjectsService);
 
   protected readonly id = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -41,11 +43,18 @@ export class TaskDetailPage {
     return task ? PRIORITY_META[task.priority] : undefined;
   });
 
+  // The task carries only a project id, so its title comes from the loaded projects.
+  protected readonly project = computed(() =>
+    this.projectsService.projects().find((project) => project.id === this.task()?.projectId),
+  );
+
   protected readonly deleteMessage = computed(
     () => `“${this.task()?.title}” will be permanently deleted. This can’t be undone.`,
   );
 
   constructor() {
+    this.projectsService.loadProjects();
+
     if (!Number.isInteger(this.id)) {
       this.state.set('not-found');
       return;

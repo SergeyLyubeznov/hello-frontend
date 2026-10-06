@@ -37,6 +37,7 @@ export class EditTaskPage {
       status: task.status,
       priority: task.priority,
       dueDate: task.dueDate,
+      projectId: task.projectId,
       labelIds: task.labels.map((label) => label.id),
     };
   });

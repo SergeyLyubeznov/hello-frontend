@@ -124,6 +124,15 @@
             </div>
 
             <div class="row">
+              <span class="row__label">Project</span>
+              @if (project(); as p) {
+                <span class="row__value">{{ p.title }}</span>
+              } @else {
+                <span class="muted">—</span>
+              }
+            </div>
+
+            <div class="row">
               <span class="row__label">Created</span>
               <time class="row__value" [attr.datetime]="t.createdAt">
                 {{ t.createdAt | date: 'MMM d, y, HH:mm' }}

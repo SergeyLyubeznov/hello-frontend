@@ -36,6 +36,18 @@
       <h2>Details</h2>
 
       <div class="field">
+        <label for="projectId">Project</label>
+        <select id="projectId" formControlName="projectId">
+          @for (project of projects(); track project.id) {
+            <option [ngValue]="project.id">{{ project.title }}</option>
+          }
+        </select>
+        @if (projectsLoaded() && projects().length === 0) {
+          <p class="error">There are no projects yet. Create a project first.</p>
+        }
+      </div>
+
+      <div class="field">
         <label for="status">Status</label>
         <select id="status" formControlName="status">
           @for (s of statuses; track s.status) {

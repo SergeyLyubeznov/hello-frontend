@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, input, output } from '@angular/core';
+import { Component, OnInit, effect, inject, input, output } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { BOARD_COLUMNS, CreateTaskDto, PRIORITIES } from '../../models/task.model';
+import { ProjectsService } from '../../../projects/services/projects.service';
 import { LabelsService } from '../../services/labels.service';
 
 const EMPTY_TASK: CreateTaskDto = {
@@ -10,6 +11,8 @@ const EMPTY_TASK: CreateTaskDto = {
   status: 'PENDING',
   priority: 'MEDIUM',
   dueDate: null,
+  // 0 means "no project chosen yet": the first project is picked once the list has loaded.
+  projectId: 0,
   labelIds: [],
 };
 
@@ -22,6 +25,7 @@ const EMPTY_TASK: CreateTaskDto = {
 export class TaskForm implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly labelsService = inject(LabelsService);
+  private readonly projectsService = inject(ProjectsService);
 
   readonly initialValue = input<CreateTaskDto>(EMPTY_TASK);
   readonly submitLabel = input('Save');
@@ -33,6 +37,8 @@ export class TaskForm implements OnInit {
   protected readonly statuses = BOARD_COLUMNS;
   protected readonly priorities = PRIORITIES;
   protected readonly labels = this.labelsService.labels;
+  protected readonly projects = this.projectsService.projects;
+  protected readonly projectsLoaded = this.projectsService.loaded;
 
   protected readonly form = this.fb.group({
     title: [EMPTY_TASK.title, [Validators.required, Validators.maxLength(100)]],
@@ -40,15 +46,28 @@ export class TaskForm implements OnInit {
     status: [EMPTY_TASK.status],
     priority: [EMPTY_TASK.priority],
     dueDate: [''],
+    // A real project id is 1 or more, so "no project" (0) keeps the form invalid.
+    projectId: [EMPTY_TASK.projectId, [Validators.min(1)]],
     labelIds: [EMPTY_TASK.labelIds],
   });
 
   constructor() {
     this.labelsService.loadLabels();
+    this.projectsService.loadProjects();
+
+    // Once the projects are known, choose the first one if nothing valid is selected yet.
+    effect(() => {
+      const projects = this.projects();
+      const control = this.form.controls.projectId;
+      if (projects.length > 0 && !projects.some((project) => project.id === control.value)) {
+        control.setValue(projects[0].id);
+      }
+    });
   }
 
   ngOnInit(): void {
-    const { title, description, status, priority, dueDate, labelIds } = this.initialValue();
+    const { title, description, status, priority, dueDate, projectId, labelIds } =
+      this.initialValue();
     // A date input only understands "YYYY-MM-DD", so cut off any time part.
     this.form.reset({
       title,
@@ -56,6 +75,7 @@ export class TaskForm implements OnInit {
       status,
       priority,
       dueDate: dueDate?.slice(0, 10) ?? '',
+      projectId,
       labelIds,
     });
   }

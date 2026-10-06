@@ -13,6 +13,16 @@ export interface Label {
 
 export type LabelDto = Omit<Label, 'id' | 'taskCount'>;
 
+export interface Project {
+  id: number;
+  title: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  // Only sent when the list is requested with withCount=true (the default).
+  taskCount?: number;
+}
+
 export interface Task {
   id: number;
   title: string;
@@ -20,6 +30,8 @@ export interface Task {
   status: TaskStatus;
   priority: TaskPriority;
   dueDate?: string | null;
+  // Every task belongs to exactly one project. The task carries only its id.
+  projectId: number;
   labels: Label[];
   createdAt: string;
   updatedAt: string;

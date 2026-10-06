@@ -22,6 +22,7 @@ export class NewTaskPage {
     description: '',
     status: this.initialStatus(),
     priority: 'MEDIUM',
+    projectId: 0, // 0 = not chosen: the form selects the first project once they are loaded
     labelIds: [],
   };
 
