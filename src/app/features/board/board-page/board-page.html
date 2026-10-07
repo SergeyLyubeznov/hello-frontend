@@ -1,97 +1,113 @@
 <div class="board">
   <header class="board__header">
     <div class="board__title">
-      <h1>Board</h1>
-      <span class="board__meta">{{ tasksService.tasks().length }} tasks</span>
+      <h1>{{ project()?.title ?? 'Board' }}</h1>
+      <span class="board__meta">
+        Board · {{ projectTasks().length }} {{ projectTasks().length === 1 ? 'task' : 'tasks' }}
+      </span>
     </div>
-    <a class="btn btn--primary" routerLink="/tasks/new">New task</a>
+    @if (project(); as p) {
+      <a class="btn btn--primary" routerLink="/tasks/new" [queryParams]="{ project: p.id }">
+        New task
+      </a>
+    }
   </header>
 
-  <div class="columns" cdkDropListGroup>
-    @for (column of columns; track column.status) {
-      <section
-        class="column"
-        [class.column--over]="hoveredStatus() === column.status"
-        [style.--column-color]="column.color"
-        cdkDropList
-        cdkDropListSortingDisabled
-        [cdkDropListData]="column.status"
-        (cdkDropListDropped)="onDrop($event, column.status)"
-        (cdkDropListEntered)="hoveredStatus.set(column.status)"
-        (cdkDropListExited)="hoveredStatus.set(null)"
-      >
-        <div class="column__header">
-          <h2>
-            {{ column.title }}
-            <span class="count">{{ tasksByStatus()[column.status].length }}</span>
-          </h2>
-          <a
-            class="column__add"
-            routerLink="/tasks/new"
-            [queryParams]="{ status: column.status }"
-            [attr.aria-label]="'Add task to ' + column.title"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
+  @if (project(); as currentProject) {
+    <div class="columns" cdkDropListGroup>
+      @for (column of columns; track column.status) {
+        <section
+          class="column"
+          [class.column--over]="hoveredStatus() === column.status"
+          [style.--column-color]="column.color"
+          cdkDropList
+          cdkDropListSortingDisabled
+          [cdkDropListData]="column.status"
+          (cdkDropListDropped)="onDrop($event, column.status)"
+          (cdkDropListEntered)="hoveredStatus.set(column.status)"
+          (cdkDropListExited)="hoveredStatus.set(null)"
+        >
+          <div class="column__header">
+            <h2>
+              {{ column.title }}
+              <span class="count">{{ tasksByStatus()[column.status].length }}</span>
+            </h2>
+            <a
+              class="column__add"
+              routerLink="/tasks/new"
+              [queryParams]="{ status: column.status, project: currentProject.id }"
+              [attr.aria-label]="'Add task to ' + column.title"
             >
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-          </a>
-        </div>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </a>
+          </div>
 
-        @for (task of tasksByStatus()[column.status]; track task.id) {
-          <a
-            class="card"
-            [routerLink]="['/tasks', task.id]"
-            cdkDrag
-            [cdkDragData]="task"
-            [cdkDragStartDelay]="{ mouse: 0, touch: 150 }"
-          >
-            <div class="badges">
-              @for (label of task.labels; track label.id) {
-                <app-label-chip [label]="label" />
-              }
-              @if (priority[task.priority]; as p) {
-                <span class="priority" [style.color]="p.color" [style.background]="p.background">
-                  <span class="priority__icon" aria-hidden="true">{{ p.icon }}</span>
-                  {{ p.label }}
+          @for (task of tasksByStatus()[column.status]; track task.id) {
+            <a
+              class="card"
+              [routerLink]="['/tasks', task.id]"
+              cdkDrag
+              [cdkDragData]="task"
+              [cdkDragStartDelay]="{ mouse: 0, touch: 150 }"
+            >
+              <div class="badges">
+                @for (label of task.labels; track label.id) {
+                  <app-label-chip [label]="label" />
+                }
+                @if (priority[task.priority]; as p) {
+                  <span class="priority" [style.color]="p.color" [style.background]="p.background">
+                    <span class="priority__icon" aria-hidden="true">{{ p.icon }}</span>
+                    {{ p.label }}
+                  </span>
+                }
+              </div>
+              <h3>{{ task.title }}</h3>
+              <p>{{ task.description }}</p>
+              @if (task.dueDate) {
+                <span class="due" [class.due--overdue]="isOverdue(task)">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <rect x="3" y="5" width="18" height="16" rx="2" />
+                    <path d="M16 3v4M8 3v4M3 11h18" />
+                  </svg>
+                  {{ task.dueDate | date: 'MMM d' }}
                 </span>
               }
-            </div>
-            <h3>{{ task.title }}</h3>
-            <p>{{ task.description }}</p>
-            @if (task.dueDate) {
-              <span class="due" [class.due--overdue]="isOverdue(task)">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <rect x="3" y="5" width="18" height="16" rx="2" />
-                  <path d="M16 3v4M8 3v4M3 11h18" />
-                </svg>
-                {{ task.dueDate | date: 'MMM d' }}
-              </span>
-            }
-          </a>
-        } @empty {
-          <p class="empty">No tasks</p>
-        }
-      </section>
-    }
-  </div>
+            </a>
+          } @empty {
+            <p class="empty">No tasks</p>
+          }
+        </section>
+      }
+    </div>
+  } @else if (projectsLoaded()) {
+    <p class="notice">
+      @if (projects().length === 0) {
+        There are no projects yet. Create a project first.
+      } @else {
+        This project does not exist. Pick one from the Projects list.
+      }
+    </p>
+  }
 </div>

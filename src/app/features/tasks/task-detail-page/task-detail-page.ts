@@ -43,6 +43,12 @@ export class TaskDetailPage {
     return task ? PRIORITY_META[task.priority] : undefined;
   });
 
+  // "Board" in the breadcrumb leads to the board of this task's project.
+  protected readonly boardLink = computed(() => {
+    const task = this.task();
+    return task ? ['/board', task.projectId] : ['/board'];
+  });
+
   // The task carries only a project id, so its title comes from the loaded projects.
   protected readonly project = computed(() =>
     this.projectsService.projects().find((project) => project.id === this.task()?.projectId),
@@ -85,7 +91,7 @@ export class TaskDetailPage {
     this.deleteError.set(null);
 
     this.tasksService.deleteTask(this.id).subscribe({
-      next: () => this.router.navigate(['/board']),
+      next: () => this.router.navigate(this.boardLink()),
       error: () => {
         this.deleting.set(false);
         this.deleteError.set('Could not delete the task. Try again.');

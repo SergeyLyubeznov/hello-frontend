@@ -24,6 +24,20 @@
       </span>
       <h1 id="dialog-title">{{ heading() }}</h1>
       <p id="dialog-text">{{ message() }}</p>
+      @if (requiredText(); as required) {
+        <div class="dialog__confirm">
+          <label for="confirm-text">Type the name to confirm</label>
+          <input
+            id="confirm-text"
+            type="text"
+            autocomplete="off"
+            [placeholder]="required"
+            [value]="typed()"
+            (input)="onTyped($event)"
+            (keydown.enter)="confirm()"
+          />
+        </div>
+      }
       @if (errorMessage()) {
         <p class="dialog__error" role="alert">{{ errorMessage() }}</p>
       }
@@ -33,7 +47,12 @@
       <button type="button" class="btn" [disabled]="busy()" (click)="requestCancel()">
         Cancel
       </button>
-      <button type="button" class="btn btn--danger" [disabled]="busy()" (click)="confirmed.emit()">
+      <button
+        type="button"
+        class="btn btn--danger"
+        [disabled]="busy() || !canConfirm()"
+        (click)="confirm()"
+      >
         {{ confirmLabel() }}
       </button>
     </div>

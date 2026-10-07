@@ -17,11 +17,15 @@ export interface Project {
   id: number;
   title: string;
   description: string;
+  // "#RRGGBB". New projects default to grey (#6B7280) on the backend.
+  color: string;
   createdAt: string;
   updatedAt: string;
   // Only sent when the list is requested with withCount=true (the default).
   taskCount?: number;
 }
+
+export type ProjectDto = Pick<Project, 'title' | 'description' | 'color'>;
 
 export interface Task {
   id: number;

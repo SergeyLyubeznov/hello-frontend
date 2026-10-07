@@ -35,7 +35,6 @@
           <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
         </svg>
         Dashboard
-        <span class="nav__badge" title="In development">In dev</span>
       </a>
       <a class="nav__link" routerLink="/board" routerLinkActive="nav__link--active">
         <svg
@@ -87,6 +86,25 @@
         Labels
       </a>
     </nav>
+
+    <div class="projects">
+      <div class="projects__heading">Projects</div>
+      @for (project of projects(); track project.id) {
+        <a
+          class="projects__link"
+          [routerLink]="['/board', project.id]"
+          routerLinkActive="projects__link--active"
+          [title]="project.description"
+        >
+          <span
+            class="projects__square"
+            aria-hidden="true"
+            [style.background]="project.color"
+          ></span>
+          {{ project.title }}
+        </a>
+      }
+    </div>
   </aside>
 
   <main class="content">

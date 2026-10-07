@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ProjectsService } from '../../../features/projects/services/projects.service';
 import { ToastHost } from '../../../shared/components/toast-host/toast-host';
 
 @Component({
@@ -8,4 +9,12 @@ import { ToastHost } from '../../../shared/components/toast-host/toast-host';
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
 })
-export class Shell {}
+export class Shell {
+  private readonly projectsService = inject(ProjectsService);
+
+  protected readonly projects = this.projectsService.projects;
+
+  constructor() {
+    this.projectsService.loadProjects();
+  }
+}

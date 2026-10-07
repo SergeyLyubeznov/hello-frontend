@@ -1,0 +1,205 @@
+<div class="page">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a routerLink="/dashboard">Projects</a>
+    <span aria-hidden="true">/</span>
+    <span class="breadcrumb__current">{{ project()?.title ?? '…' }}</span>
+  </nav>
+
+  @if (project(); as p) {
+    <header class="header">
+      <div class="header__main">
+        <span class="header__square" aria-hidden="true" [style.background]="p.color"></span>
+        <div class="header__text">
+          <h1>{{ p.title }}</h1>
+          @if (p.description) {
+            <p>{{ p.description }}</p>
+          }
+        </div>
+      </div>
+      <div class="header__actions">
+        <button type="button" class="btn" (click)="openEdit()">Edit</button>
+        <a class="btn btn--primary" [routerLink]="['/board', p.id]">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M4 4h5v16H4zM10 4h5v10h-5zM16 4h4v13h-4z" />
+          </svg>
+          Open board
+        </a>
+      </div>
+    </header>
+
+    <div class="layout">
+      <div class="main">
+        <section class="card progress" aria-labelledby="progress-heading">
+          <div class="progress__head">
+            <h2 id="progress-heading">Progress</h2>
+            @if (tasksLoaded()) {
+              <span class="muted-text">
+                {{ progress().done }} of {{ progress().total }}
+                {{ progress().total === 1 ? 'task' : 'tasks' }} done
+              </span>
+            }
+          </div>
+
+          <div class="bar" role="img" [attr.aria-label]="progress().percent + ' percent complete'">
+            <div
+              class="bar__fill"
+              [style.width.%]="progress().percent"
+              [style.background]="p.color"
+            ></div>
+          </div>
+
+          <div class="tiles">
+            @for (column of columns; track column.status) {
+              <div class="tile">
+                <span class="tile__label">
+                  <span class="tile__dot" [style.background]="column.color"></span>
+                  {{ column.title }}
+                </span>
+                <span class="tile__value">{{ progress().byStatus[column.status] }}</span>
+              </div>
+            }
+          </div>
+        </section>
+
+        <div class="links">
+          <a class="link" [routerLink]="['/board', p.id]">
+            <span class="link__icon" aria-hidden="true">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 4h5v16H4zM10 4h5v10h-5zM16 4h4v13h-4z" />
+              </svg>
+            </span>
+            <span class="link__text">
+              <span class="link__title">Board</span>
+              <span class="link__sub">Kanban view</span>
+            </span>
+          </a>
+          <a class="link" routerLink="/backlog">
+            <span class="link__icon" aria-hidden="true">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+              </svg>
+            </span>
+            <span class="link__text">
+              <span class="link__title">Backlog</span>
+              <span class="link__sub">List view</span>
+            </span>
+          </a>
+          <a class="link" routerLink="/labels">
+            <span class="link__icon" aria-hidden="true">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 12V4h8l10 10-8 8zM7.5 8h.01" />
+              </svg>
+            </span>
+            <span class="link__text">
+              <span class="link__title">Labels</span>
+              <span class="link__sub">
+                {{ labelCount() }} {{ labelCount() === 1 ? 'label' : 'labels' }}
+              </span>
+            </span>
+          </a>
+        </div>
+
+        <section class="card list" aria-labelledby="due-heading">
+          <div class="list__head">
+            <h2 id="due-heading">Due soon</h2>
+            <a class="list__all" [routerLink]="['/board', p.id]">View board</a>
+          </div>
+          @for (task of dueSoon(); track task.id) {
+            <a class="row" [routerLink]="['/tasks', task.id]">
+              <span class="row__title">{{ task.title }}</span>
+              <span class="row__meta">
+                @if (task.labels[0]; as label) {
+                  <app-label-chip [label]="label" />
+                }
+                <span class="row__date" [class.row__date--overdue]="isOverdue(task)">
+                  {{ task.dueDate | date: 'MMM d' }}
+                </span>
+              </span>
+            </a>
+          } @empty {
+            <p class="list__empty">
+              {{ tasksLoaded() ? 'No unfinished tasks with a due date.' : 'Loading…' }}
+            </p>
+          }
+        </section>
+      </div>
+
+      <aside class="aside" aria-label="Project details">
+        <section class="card danger">
+          <h2>Danger zone</h2>
+          <span class="muted-text">
+            Deleting a project removes all of its tasks. This can’t be undone.
+          </span>
+          <button type="button" class="btn btn--danger-outline" (click)="askDelete()">
+            Delete project
+          </button>
+        </section>
+      </aside>
+    </div>
+  } @else if (projectsLoaded()) {
+    <p class="notice">
+      This project does not exist. <a routerLink="/dashboard">Back to projects</a>
+    </p>
+  }
+
+  @if (editing()) {
+    <app-project-dialog
+      [project]="project() ?? null"
+      [saving]="saving()"
+      [errorMessage]="saveError()"
+      (saved)="save($event)"
+      (cancelled)="closeEdit()"
+      (deleteRequested)="askDelete()"
+    />
+  }
+
+  @if (confirmingDelete()) {
+    <app-confirm-dialog
+      [heading]="deleteHeading()"
+      [message]="deleteMessage()"
+      [requiredText]="project()?.title ?? null"
+      confirmLabel="Delete project"
+      [busy]="deleting()"
+      [errorMessage]="deleteError()"
+      (confirmed)="confirmDelete()"
+      (cancelled)="cancelDelete()"
+    />
+  }
+</div>

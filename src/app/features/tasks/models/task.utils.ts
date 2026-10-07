@@ -7,12 +7,14 @@ export function isOverdue(task: Task): boolean {
     return false;
   }
 
-  return task.dueDate.slice(0, 10) < todayAsIsoDate();
+  return task.dueDate.slice(0, 10) < isoDateFromToday(0);
 }
 
-function todayAsIsoDate(): string {
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${now.getFullYear()}-${month}-${day}`;
+// Today plus `days` days, as "YYYY-MM-DD" in the viewer's time zone.
+export function isoDateFromToday(days: number): string {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
 }

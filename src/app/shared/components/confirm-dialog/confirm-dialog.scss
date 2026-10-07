@@ -58,6 +58,33 @@
   color: #b42318;
 }
 
+.dialog__confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+
+  label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid #c9c8c2;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--color-text);
+    font:
+      15px 'Hanken Grotesk',
+      'Segoe UI',
+      sans-serif;
+  }
+}
+
 .dialog__actions {
   display: flex;
   flex-wrap: wrap;

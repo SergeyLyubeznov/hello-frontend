@@ -4,6 +4,8 @@ import { BacklogPage } from './features/backlog/backlog-page/backlog-page';
 import { BoardPage } from './features/board/board-page/board-page';
 import { DashboardPage } from './features/dashboard/dashboard-page/dashboard-page';
 import { LabelsPage } from './features/labels/labels-page/labels-page';
+import { ProjectPage } from './features/projects/project-page/project-page';
+import { redirectToProject } from './features/projects/redirect-to-project.guard';
 import { EditTaskPage } from './features/tasks/edit-task-page/edit-task-page';
 import { NewTaskPage } from './features/tasks/new-task-page/new-task-page';
 import { TaskDetailPage } from './features/tasks/task-detail-page/task-detail-page';
@@ -15,7 +17,9 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'board', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardPage },
-      { path: 'board', component: BoardPage },
+      { path: 'board', component: BoardPage, canActivate: [redirectToProject] },
+      { path: 'board/:projectId', component: BoardPage },
+      { path: 'projects/:id', component: ProjectPage },
       { path: 'backlog', component: BacklogPage },
       { path: 'labels', component: LabelsPage },
       { path: 'tasks/new', component: NewTaskPage },

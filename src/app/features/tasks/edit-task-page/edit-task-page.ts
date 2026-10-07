@@ -24,6 +24,12 @@ export class EditTaskPage {
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
+  // "Board" in the breadcrumb leads to the board of this task's project.
+  protected readonly boardLink = computed(() => {
+    const task = this.task();
+    return task ? ['/board', task.projectId] : ['/board'];
+  });
+
   // The form works with label ids, while the loaded task carries whole labels.
   protected readonly initialValue = computed<CreateTaskDto | null>(() => {
     const task = this.task();

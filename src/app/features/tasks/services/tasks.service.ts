@@ -12,9 +12,16 @@ export class TasksService {
   private readonly _tasks = signal<Task[]>([]);
   readonly tasks = this._tasks.asReadonly();
 
+  // Lets screens show progress only once the tasks are really there.
+  private readonly _loaded = signal(false);
+  readonly loaded = this._loaded.asReadonly();
+
   loadTasks(): void {
     this.http.get<Task[]>(API_URL).subscribe({
-      next: (tasks) => this._tasks.set(tasks),
+      next: (tasks) => {
+        this._tasks.set(tasks);
+        this._loaded.set(true);
+      },
       error: (err) => console.error('Failed to load tasks', err),
     });
   }

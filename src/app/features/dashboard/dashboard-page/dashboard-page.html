@@ -1,1 +1,113 @@
-<app-in-development title="Dashboard" />
+<div class="page">
+  <header class="header">
+    <div class="header__title">
+      <h1 class="page__title">{{ greeting }}</h1>
+      <span class="header__meta">{{ today | date: 'EEEE, MMMM d' }}</span>
+    </div>
+    <a class="btn btn--primary" routerLink="/tasks/new">New task</a>
+  </header>
+
+  <section class="section" aria-labelledby="projects-heading">
+    <div class="section__head">
+      <h2 id="projects-heading">Projects</h2>
+      <button type="button" class="btn" (click)="openCreate()">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+        New project
+      </button>
+    </div>
+
+    @if (projects().length > 0) {
+      <div class="grid">
+        @for (project of projects(); track project.id) {
+          <a class="project" [routerLink]="['/projects', project.id]">
+            <span class="project__head">
+              <span
+                class="project__square"
+                aria-hidden="true"
+                [style.background]="project.color"
+              ></span>
+              <h3>{{ project.title }}</h3>
+            </span>
+
+            <span class="project__progress">
+              @if (tasksLoaded()) {
+                <span class="project__numbers">
+                  <span>
+                    {{ progressOf(project.id).done }} of {{ progressOf(project.id).total }}
+                    {{ progressOf(project.id).total === 1 ? 'task' : 'tasks' }} done
+                  </span>
+                  <span>{{ progressOf(project.id).percent }}%</span>
+                </span>
+                <span
+                  class="bar"
+                  role="img"
+                  [attr.aria-label]="progressOf(project.id).percent + ' percent complete'"
+                >
+                  <span
+                    class="bar__fill"
+                    [style.width.%]="progressOf(project.id).percent"
+                    [style.background]="project.color"
+                  ></span>
+                </span>
+              } @else {
+                <span class="project__numbers">
+                  <span>
+                    {{ project.taskCount ?? 0 }} {{ project.taskCount === 1 ? 'task' : 'tasks' }}
+                  </span>
+                </span>
+              }
+            </span>
+          </a>
+        }
+      </div>
+    } @else if (projectsLoaded()) {
+      <p class="notice">There are no projects yet. Create the first one.</p>
+    }
+  </section>
+
+  <section class="section" aria-labelledby="week-heading">
+    <div class="section__head">
+      <h2 id="week-heading">Due this week</h2>
+    </div>
+
+    <div class="card list">
+      @for (task of dueThisWeek(); track task.id) {
+        <a class="row" [routerLink]="['/tasks', task.id]">
+          <span class="date" [class.date--overdue]="isOverdueDate(task.dueDate ?? '')">
+            <span class="date__month">{{ task.dueDate | date: 'MMM' }}</span>
+            <span class="date__day">{{ task.dueDate | date: 'd' }}</span>
+          </span>
+          <span class="row__text">
+            <span class="row__title">{{ task.title }}</span>
+            <span class="row__project">{{ projectTitle(task.projectId) }}</span>
+          </span>
+        </a>
+      } @empty {
+        <p class="list__empty">
+          {{ tasksLoaded() ? 'Nothing is due in the next 7 days.' : 'Loading…' }}
+        </p>
+      }
+    </div>
+  </section>
+
+  @if (creating()) {
+    <app-project-dialog
+      [saving]="saving()"
+      [errorMessage]="saveError()"
+      (saved)="save($event)"
+      (cancelled)="closeCreate()"
+    />
+  }
+</div>

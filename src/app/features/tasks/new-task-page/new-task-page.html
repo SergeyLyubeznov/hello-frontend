@@ -1,6 +1,8 @@
 <div class="page">
   <nav class="breadcrumb" aria-label="Breadcrumb">
-    <a routerLink="/board">Board</a>
+    <a [routerLink]="initialValue.projectId ? ['/board', initialValue.projectId] : ['/board']">
+      Board
+    </a>
     <span aria-hidden="true">/</span>
     <span class="breadcrumb__current">New task</span>
   </nav>

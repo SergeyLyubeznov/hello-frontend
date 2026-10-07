@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, input, output, viewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  computed,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -12,13 +21,32 @@ export class ConfirmDialog implements AfterViewInit {
   readonly busy = input(false);
   readonly errorMessage = input<string | null>(null);
 
+  // For dangerous actions: the user must type this text before Confirm is enabled.
+  readonly requiredText = input<string | null>(null);
+
   readonly confirmed = output<void>();
   readonly cancelled = output<void>();
 
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
+  protected readonly typed = signal('');
+  protected readonly canConfirm = computed(() => {
+    const required = this.requiredText();
+    return required === null || this.typed().trim() === required.trim();
+  });
+
   ngAfterViewInit(): void {
     this.dialog().nativeElement.showModal();
+  }
+
+  protected onTyped(event: Event): void {
+    this.typed.set((event.target as HTMLInputElement).value);
+  }
+
+  protected confirm(): void {
+    if (this.canConfirm() && !this.busy()) {
+      this.confirmed.emit();
+    }
   }
 
   // Escape key: the browser would close the dialog itself, but the parent owns its state.

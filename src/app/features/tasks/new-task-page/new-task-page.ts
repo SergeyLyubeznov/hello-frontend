@@ -22,9 +22,16 @@ export class NewTaskPage {
     description: '',
     status: this.initialStatus(),
     priority: 'MEDIUM',
-    projectId: 0, // 0 = not chosen: the form selects the first project once they are loaded
+    // From "?project=", e.g. when opened from a project's board. 0 = not chosen: the form
+    // then selects the first project once they are loaded.
+    projectId: this.initialProjectId(),
     labelIds: [],
   };
+
+  private initialProjectId(): number {
+    const id = Number(this.route.snapshot.queryParamMap.get('project'));
+    return Number.isInteger(id) && id > 0 ? id : 0;
+  }
 
   private initialStatus(): TaskStatus {
     const status = this.route.snapshot.queryParamMap.get('status');
@@ -37,7 +44,8 @@ export class NewTaskPage {
     this.errorMessage.set(null);
 
     this.tasksService.createTask(dto).subscribe({
-      next: () => this.router.navigate(['/board']),
+      // Show the board of the project the task went into.
+      next: () => this.router.navigate(['/board', dto.projectId]),
       error: () => {
         this.saving.set(false);
         this.errorMessage.set('Could not create the task. Try again.');

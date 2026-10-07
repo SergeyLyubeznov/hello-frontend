@@ -1,0 +1,73 @@
+<dialog
+  #dialog
+  class="dialog"
+  aria-labelledby="project-dialog-title"
+  (cancel)="onEscape($event)"
+  (click)="onClick($event)"
+>
+  <form class="dialog__inner" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <h1 id="project-dialog-title">{{ project() ? 'Edit project' : 'New project' }}</h1>
+
+    <div class="field">
+      <label for="project-name">Name</label>
+      <input id="project-name" type="text" formControlName="title" placeholder="e.g. Mobile app" />
+      @if (form.controls.title.touched && form.controls.title.hasError('required')) {
+        <p class="error">Name is required</p>
+      }
+      @if (form.controls.title.hasError('maxlength')) {
+        <p class="error">Name is too long (max 100 characters)</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="project-description">Description</label>
+      <textarea
+        id="project-description"
+        rows="3"
+        formControlName="description"
+        placeholder="What is this project about?"
+      ></textarea>
+      @if (form.controls.description.hasError('maxlength')) {
+        <p class="error">Description is too long (max 500 characters)</p>
+      }
+    </div>
+
+    <fieldset class="colors">
+      <legend>Color</legend>
+      <div class="colors__grid">
+        @for (color of colors; track color.id) {
+          <label class="color">
+            <input type="radio" formControlName="colorId" [value]="color.id" />
+            <span class="color__square" aria-hidden="true" [style.background]="color.color"></span>
+            {{ color.name }}
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    @if (errorMessage()) {
+      <p class="error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <div class="actions" [class.actions--split]="project()">
+      @if (project()) {
+        <button
+          type="button"
+          class="btn btn--danger-outline"
+          [disabled]="saving()"
+          (click)="deleteRequested.emit()"
+        >
+          Delete project
+        </button>
+      }
+      <span class="actions__main">
+        <button type="button" class="btn" [disabled]="saving()" (click)="requestCancel()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn--primary" [disabled]="saving()">
+          {{ project() ? 'Save changes' : 'Create project' }}
+        </button>
+      </span>
+    </div>
+  </form>
+</dialog>
